@@ -10,6 +10,10 @@ const AnimatedShaderBackground = () => {
     const container = containerRef.current;
     if (!container) return;
 
+    // Detect low-end device or mobile
+    const isMobileOrLowEnd = window.matchMedia('(max-width: 768px)').matches || (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4);
+    if (isMobileOrLowEnd) return;
+
     const scene = new THREE.Scene();
     const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
     const renderer = new THREE.WebGLRenderer({ antialias: true });

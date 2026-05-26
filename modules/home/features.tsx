@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import {
     Lock,
     Palette,
@@ -86,6 +87,12 @@ const features: Feature[] = [
 ];
 
 export function Features() {
+    const [isMobile, setIsMobile] = useState(true); // default to true to avoid initial jank on mobile
+
+    useEffect(() => {
+        setIsMobile(window.matchMedia("(max-width: 768px)").matches || (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4));
+    }, []);
+
     return (
         <ul className="grid grid-cols-1 grid-rows-none gap-4 md:grid-cols-12 md:grid-rows-5 xl:grid-rows-4 xl:gap-6">
             {features.map((feature, index) => (
@@ -95,6 +102,7 @@ export function Features() {
                     icon={<feature.icon className="h-6 w-6 text-red-600 dark:text-red-500" />}
                     title={feature.title}
                     description={feature.description}
+                    disabled={isMobile}
                 />
             ))}
         </ul>
@@ -106,16 +114,17 @@ interface GridItemProps {
     icon: React.ReactNode;
     title: string;
     description: React.ReactNode;
+    disabled?: boolean;
 }
 
-const GridItem = ({ area, icon, title, description }: GridItemProps) => {
+const GridItem = ({ area, icon, title, description, disabled = false }: GridItemProps) => {
     return (
         <li className={cn("min-h-[14rem] list-none", area)}>
             <div className="relative h-full rounded-[1.25rem] border-[0.75px] border-border p-2 md:rounded-[1.5rem] md:p-3">
                 <GlowingEffect
                     spread={40}
                     glow={true}
-                    disabled={false}
+                    disabled={disabled}
                     proximity={64}
                     inactiveZone={0.01}
                     borderWidth={3}

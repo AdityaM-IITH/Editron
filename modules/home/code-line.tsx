@@ -29,12 +29,13 @@ export const CodeLine = ({ line }: { line: string }) => {
             .replace(/Editron|console|editor/g, '<span class="text-rose-600 dark:text-rose-400">$&</span>');
     }
 
-    const [highlighted, setHighlighted] = React.useState<React.ReactNode>(line);
+    const getHighlighted = () => {
+        if (line.includes('//')) {
+            const parts = line.split('//');
+            return <><span dangerouslySetInnerHTML={{ __html: highlightCode(parts[0]) }} /><span className="text-slate-500 italic">{'//' + parts[1]}</span></>;
+        }
+        return <span dangerouslySetInnerHTML={{ __html: highlightCode(line) }} />;
+    };
 
-    React.useEffect(() => {
-        setHighlighted(highlight(line));
-// eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [line]);
-
-    return highlighted;
+    return getHighlighted();
 };
